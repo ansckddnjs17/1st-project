@@ -54,7 +54,7 @@ class BackApplicationTests {
         orderRepository.saveAndFlush(order);
 
         // when: 전체 주문 조회
-        List<OrderDto> result = orderService.findOrders(null);
+        List<OrderDto> result = orderService.findOrders(customer.getId(), null);
 
         // then
         assertThat(result).hasSize(1);

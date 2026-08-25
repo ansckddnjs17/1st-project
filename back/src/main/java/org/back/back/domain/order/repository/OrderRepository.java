@@ -11,4 +11,15 @@ public interface OrderRepository extends JpaRepository<Order,Integer> {
     List<Order> findAllByOrderByCreatedDateAsc(); // 먼저 등록된 주문부터 반환.
 
     List<Order> findAllByDeliveryDateOrderByCreatedDateAsc(LocalDate deliveryDate); // 배송일 반환
+
+    // 특정 고객의 전체 주문
+    List<Order> findAllByCustomerIdOrderByCreatedDateAsc(
+            Integer customerId
+    );
+
+    List<Order>
+    findAllByCustomerIdAndDeliveryDateOrderByCreatedDateAsc(
+            Integer customerId,
+            LocalDate deliveryDate
+    );
 }

@@ -1,6 +1,7 @@
 package org.back.back.domain.order.service;
 
 import lombok.RequiredArgsConstructor;
+import org.back.back.domain.customer.repository.CustomerRepository;
 import org.back.back.domain.order.dto.OrderDto;
 import org.back.back.domain.order.entity.Order;
 import org.back.back.domain.order.repository.OrderRepository;
@@ -9,20 +10,32 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
 
-    public List<OrderDto> findOrders(LocalDate date) {
+    public List<OrderDto> findOrders(int customerId,LocalDate date) {
+
+        if(!customerRepository.existsById(customerId)){
+            throw new NoSuchElementException(
+                    "존재하지 않는 고객입니다."
+            );
+        }
         List<Order> orders;
 
         if (date == null) {
-            orders = orderRepository.findAllByOrderByCreatedDateAsc();
+            orders = orderRepository
+                    .findAllByCustomerIdOrderByCreatedDateAsc(customerId);
         } else {
             orders = orderRepository
-                    .findAllByDeliveryDateOrderByCreatedDateAsc(date);
+                    .findAllByCustomerIdAndDeliveryDateOrderByCreatedDateAsc(
+                            customerId,
+                            date
+                    );
         }
 
         return orders.stream()
