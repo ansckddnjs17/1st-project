@@ -52,7 +52,7 @@ public class OrderService {
     // 배송중 -> 수정,삭제 불가
     private boolean isShipping(Order order){
         LocalDateTime now = LocalDateTime.now();
-        LocalDate deliberyDate = order.getDeliveryDate();
-        return !now.isBefore(deliberyDate.atTime(14,0));
+        LocalDate deliveryDate = order.getDeliveryDate();
+        return !now.isBefore(deliveryDate.atTime(14,0));
     }
 }

@@ -26,12 +26,18 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/orders")
-    public List<OrderDto> findOrders(
-            @RequestParam(required = false) // 날짜 생략(null일 경우)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) //ISO 날짜 형식 => yyyy-mm-dd
+    public RsData<List<OrderDto>> findOrders(
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate date
     ) {
-        return orderService.findOrders(date);
+        List<OrderDto> orders = orderService.findOrders(date);
+
+        return new RsData<>(
+                "200-1",
+                "주문 목록을 조회했습니다.",
+                orders
+        );
     }
 
 
