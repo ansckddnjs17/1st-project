@@ -6,9 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.back.back.domain.customer.entity.Customer;
 import org.back.back.domain.product.entity.Product;
-import org.springframework.data.annotation.CreatedDate;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -27,8 +26,7 @@ public class Order {
 
     private int quantity;
 
-    @CreatedDate
-    private LocalDateTime deliveryDate;
+    private LocalDate deliveryDate;
 
     public void modify(int quantity) {
         this.quantity = quantity;

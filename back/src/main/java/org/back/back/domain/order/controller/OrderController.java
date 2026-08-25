@@ -1,7 +1,7 @@
 package org.back.back.domain.order.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.back.back.domain.order.dto.OrderDto;
 import org.back.back.domain.order.entity.Order;
@@ -49,7 +49,7 @@ public class OrderController {
     }
 
     record OrderModifyReqBody(
-        @NotBlank(message = "수량을 입력해주세요.")
+            @Min(1)
         int quantity
     ){}
 }
