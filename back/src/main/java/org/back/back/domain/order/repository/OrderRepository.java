@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order,Integer> {
-    List<Order> findAllByOrderByCreatedDateAsc();
+    List<Order> findAllByOrderByCreatedDateAsc(); // 먼저 등록된 주문부터 반환.
 
-    List<Order> findAllByDeliveryDateOrderByCreatedDateAsc(LocalDate deliveryDate);
+    List<Order> findAllByDeliveryDateOrderByCreatedDateAsc(LocalDate deliveryDate); // 배송일 반환
 }

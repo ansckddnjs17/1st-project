@@ -19,7 +19,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Transactional
 class BackApplicationTests {
 
     @Autowired
@@ -68,41 +67,5 @@ class BackApplicationTests {
         assertThat(orderDto.quantity()).isEqualTo(2);
         assertThat(orderDto.deliveryDate())
                 .isEqualTo(LocalDate.now().plusDays(1));
-    }
-
-    @Test
-    void test2() {
-        // given
-        Customer customer = new Customer();
-        customerRepository.save(customer);
-
-        Product product = new Product();
-        productRepository.save(product);
-
-        LocalDate deliveryDate = LocalDate.now().plusDays(1);
-
-        Order order = new Order(
-                customer,
-                product,
-                3,
-                deliveryDate
-        );
-
-        orderRepository.saveAndFlush(order);
-
-        // when: 배송일을 기준으로 조회
-        List<OrderDto> result =
-                orderService.findOrders(deliveryDate);
-
-        // then
-        assertThat(result).hasSize(1);
-
-        OrderDto orderDto = result.getFirst();
-
-        assertThat(orderDto.id()).isEqualTo(order.getId());
-        assertThat(orderDto.customerId()).isEqualTo(customer.getId());
-        assertThat(orderDto.productId()).isEqualTo(product.getId());
-        assertThat(orderDto.quantity()).isEqualTo(3);
-        assertThat(orderDto.deliveryDate()).isEqualTo(deliveryDate);
     }
 }

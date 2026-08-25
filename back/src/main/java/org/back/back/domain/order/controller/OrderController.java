@@ -22,8 +22,8 @@ public class OrderController {
 
     @GetMapping("/orders")
     public List<OrderDto> findOrders(
-            @RequestParam(required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            @RequestParam(required = false) // 날짜 생략(null일 경우)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) //ISO 날짜 형식 => yyyy-mm-dd
             LocalDate date
     ) {
         return orderService.findOrders(date);

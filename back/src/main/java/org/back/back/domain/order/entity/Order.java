@@ -12,14 +12,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "orders") // order가 sql에서 예약어이기 때문에 따로 지정.
 @Getter
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 public class Order {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int id;
+    private int id; // 자동 생성
 
     @ManyToOne(fetch=FetchType.LAZY)
     private Customer customer;
@@ -30,7 +30,7 @@ public class Order {
     private int quantity;
 
     @CreatedDate
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDate; // 만들 때 자동 생성
 
     private LocalDate deliveryDate;
 
