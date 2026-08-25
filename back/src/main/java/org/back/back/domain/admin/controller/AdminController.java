@@ -1,7 +1,9 @@
 package org.back.back.domain.admin.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.back.back.domain.admin.dto.OrderDto;
+import org.back.back.domain.admin.dto.CustomerOrderDto;
+import org.back.back.domain.admin.service.AdminService;
+import org.back.back.domain.order.dto.OrderDto;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,28 +16,26 @@ import java.util.List;
 @RequestMapping("/api/v1/admin")
 public class AdminController {
 
-    @GetMapping(value = "/oders")
-    public List<OrderDto> getAllOlder(
+    private final AdminService adminService;
+
+    @GetMapping(value = "/orders")
+    public List<CustomerOrderDto> getOrders(
             @RequestParam(name = "date", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate date
     ){
         if(date == null){
-
+            return adminService.findAllOrders();
         }else{
-
+            return adminService.findOrdersByDeliveryDate(date);
         }
-        List<OrderDto> l = new ArrayList<>();
-        l.add(new OrderDto("1","","",0,0, LocalDate.now()));
-        l.add(new OrderDto("2","","",0,0, LocalDate.now()));
-        return l;
     }
 
-    @GetMapping(value = "/oders/{id}")
-    public OrderDto getOlder(
+    @GetMapping(value = "/orders/{id}")
+    public OrderDto getOrder(
             @PathVariable Integer id
     ){
-        return new OrderDto("2","","",0,0, LocalDate.now());
+        return adminService.findOrder(id);
     }
 
 }
