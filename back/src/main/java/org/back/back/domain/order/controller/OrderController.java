@@ -9,6 +9,10 @@ import org.back.back.domain.order.service.OrderService;
 import org.back.back.global.dto.RsData;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -20,6 +24,13 @@ public class OrderController {
 
     @GetMapping("/orders")
     public List<OrderDto> getOrders(){
+        List<Order> orderList = orderService.findAll();
+
+        List<OrderDto> orderDtoList=orderList.stream()
+                .map(OrderDto::new)
+                .toList();
+
+        return orderDtoList;
     }
 
     @PutMapping("/orders/{id}")
