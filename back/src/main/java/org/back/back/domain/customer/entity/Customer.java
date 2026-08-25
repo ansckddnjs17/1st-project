@@ -4,10 +4,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.back.back.domain.order.entity.Order;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -31,7 +27,4 @@ public class Customer {
         this.address = address;
         this.postcode = postcode;
     }
-
-    @OneToMany(mappedBy = "customer")
-    private List<Order> orders = new ArrayList<>();
 }
