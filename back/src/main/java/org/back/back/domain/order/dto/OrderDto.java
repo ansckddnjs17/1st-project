@@ -2,6 +2,7 @@ package org.back.back.domain.order.dto;
 
 import org.back.back.domain.order.entity.Order;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record OrderDto(
@@ -9,7 +10,7 @@ public record OrderDto(
         int customerId,
         int productId,
         int quantity,
-        LocalDateTime deliveryDate
+        LocalDate deliveryDate
 ) {
     public OrderDto(Order order){
         this(
