@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -15,7 +16,7 @@ import java.time.Instant;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @NotBlank
     @Column(nullable = false)
@@ -26,13 +27,14 @@ public class Product {
     private String description;
 
     @Positive
+    @Column(nullable = false)
     private int price;
 
     @Column(nullable = false, updatable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
     public Product(String name, String description, int price) {
         this.name = name;
@@ -42,14 +44,14 @@ public class Product {
 
     @PrePersist
     void onCreate() {
-        Instant now = Instant.now();
+        LocalDateTime now = LocalDateTime.now();
             createdAt = now;
             updatedAt = now;
     }
 
     @PreUpdate
     void onUpdate() {
-        updatedAt = Instant.now();
+        updatedAt = LocalDateTime.now();
     }
 
 }
