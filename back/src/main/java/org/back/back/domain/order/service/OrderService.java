@@ -1,6 +1,7 @@
 package org.back.back.domain.order.service;
 
 import lombok.RequiredArgsConstructor;
+import org.back.back.domain.order.dto.OrderDto;
 import org.back.back.domain.order.entity.Order;
 import org.back.back.domain.order.repository.OrderRepository;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,19 @@ import java.util.List;
 public class OrderService {
     private final OrderRepository orderRepository;
 
-    public List<Order> findAll(){
-        return orderRepository.findAll();
+    public List<OrderDto> findOrders(LocalDate date) {
+        List<Order> orders;
+
+        if (date == null) {
+            orders = orderRepository.findAllByOrderByCreatedDateAsc();
+        } else {
+            orders = orderRepository
+                    .findAllByDeliveryDateOrderByCreatedDateAsc(date);
+        }
+
+        return orders.stream()
+                .map(OrderDto::new)
+                .toList();
     }
 
     public Order modify(int id, int quantity){

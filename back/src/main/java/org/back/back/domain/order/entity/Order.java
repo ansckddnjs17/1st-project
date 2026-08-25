@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "orders") // order가 sql에서 예약어이기 때문에 따로 지정.
 @Getter
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
