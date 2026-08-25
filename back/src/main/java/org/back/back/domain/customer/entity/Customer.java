@@ -11,11 +11,4 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(unique = true)
-    private String email;
-
-    public Customer(String email) {
-        this.email = email;
-    }
 }
