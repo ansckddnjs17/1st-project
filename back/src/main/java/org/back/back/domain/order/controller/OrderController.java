@@ -9,10 +9,6 @@ import org.back.back.domain.order.service.OrderService;
 import org.back.back.global.dto.RsData;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -39,12 +35,18 @@ public class OrderController {
             @PathVariable int id,
             @Valid @RequestBody OrderModifyReqBody reqBody
     ){
-        Order order = orderService.findById(id);
+        Order order = orderService.modify(id, reqBody.quantity);
+        return new RsData<>("200-1", "주문이 수정되었습니다.");
     }
 
     @DeleteMapping("/orders/{id}")
     @Transactional
-    public RsData<Void> delete(){}
+    public RsData<Void> delete(
+            @PathVariable int id
+    ){
+        orderService.delete(id);
+        return new RsData<>("200-1", "주문이 삭제되었습니다.");
+    }
 
     record OrderModifyReqBody(
         @NotBlank(message = "수량을 입력해주세요.")

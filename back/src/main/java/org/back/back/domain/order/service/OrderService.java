@@ -16,12 +16,14 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-    public Order findById(int id){
-        return orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
+    public Order modify(int id, int quantity){
+        Order order = orderRepository.findById(id).orElseThrow();
+        order.modify(quantity);
+        return order;
     }
 
-    public Order Modify(int id, int quantity){
-        return orderRepository.
+    public void delete(int id){
+        Order order = orderRepository.findById(id).orElseThrow();
+        orderRepository.delete(order);
     }
 }

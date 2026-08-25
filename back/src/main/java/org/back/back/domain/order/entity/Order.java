@@ -30,9 +30,7 @@ public class Order {
     @CreatedDate
     private LocalDateTime deliveryDate;
 
-    public void modify(
-            int quantity
-    ) {
+    public void modify(int quantity) {
         this.quantity = quantity;
     }
 }
