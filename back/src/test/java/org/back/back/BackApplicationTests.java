@@ -36,7 +36,7 @@ class BackApplicationTests {
     @Test
     void test1() {
         // given: 고객 저장
-        Customer customer = new Customer();
+        Customer customer = new Customer("email", "address", "postcode");
         customerRepository.save(customer);
 
         // 상품 저장
