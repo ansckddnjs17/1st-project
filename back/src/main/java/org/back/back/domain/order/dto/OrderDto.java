@@ -1,4 +1,6 @@
 package org.back.back.domain.order.dto;
 
-public class OrderDto {
+public record OrderDto(
+        int id,
+) {
 }
