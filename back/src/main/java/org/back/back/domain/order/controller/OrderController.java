@@ -31,12 +31,12 @@ public class OrderController {
 
     @PutMapping("/orders/{id}")
     @Transactional
-    public RsData<Void> modify(
+    public RsData<OrderDto> modify(
             @PathVariable int id,
             @Valid @RequestBody OrderModifyReqBody reqBody
     ){
         Order order = orderService.modify(id, reqBody.quantity);
-        return new RsData<>("200-1", "주문이 수정되었습니다.");
+        return new RsData<OrderDto>("200-1", "주문이 수정되었습니다.",new OrderDto(order));
     }
 
     @DeleteMapping("/orders/{id}")
