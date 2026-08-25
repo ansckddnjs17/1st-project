@@ -27,11 +27,14 @@ public class OrderController {
 
     @GetMapping("/orders")
     public RsData<List<OrderDto>> findOrders(
+            @RequestParam
+            String email,
+
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate date
     ) {
-        List<OrderDto> orders = orderService.findOrders(date);
+        List<OrderDto> orders=orderService.findOrders(email,date);
 
         return new RsData<>(
                 "200-1",
