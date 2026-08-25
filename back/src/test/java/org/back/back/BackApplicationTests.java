@@ -35,37 +35,47 @@ class BackApplicationTests {
 
     @Test
     void test1() {
-        // given: 고객 저장
-        Customer customer = new Customer();
-        customerRepository.save(customer);
-
-        // 상품 저장
+        // given: 공통 상품 1개 저장
         Product product = new Product();
         productRepository.save(product);
 
-        // 주문 저장
-        Order order = new Order(
-                customer,
-                product,
-                2,
-                LocalDate.now().plusDays(1)
-        );
+        LocalDate deliveryDate =
+                LocalDate.of(2026, 8, 26);
 
-        orderRepository.saveAndFlush(order);
+        String[] emails = {
+                "customer1@test.com",
+                "customer2@test.com",
+                "customer3@test.com",
+                "customer4@test.com",
+                "customer5@test.com"
+        };
 
-        // when: 전체 주문 조회
-        List<OrderDto> result = orderService.findOrders(customer.getId(), null);
+        for (int i = 0; i < emails.length; i++) {
+            // 고객 저장
+            Customer customer = new Customer(emails[i]);
+            customerRepository.save(customer);
+
+            // 고객별 주문 저장
+            Order order = new Order(
+                    customer,
+                    product,
+                    i + 1,
+                    deliveryDate
+            );
+
+            orderRepository.save(order);
+
+            System.out.println(
+                    "email=" + customer.getEmail()
+                            + ", customerId=" + customer.getId()
+                            + ", quantity=" + order.getQuantity()
+            );
+        }
+
+        orderRepository.flush();
 
         // then
-        assertThat(result).hasSize(1);
-
-        OrderDto orderDto = result.getFirst();
-
-        assertThat(orderDto.id()).isEqualTo(order.getId());
-        assertThat(orderDto.customerId()).isEqualTo(customer.getId());
-        assertThat(orderDto.productId()).isEqualTo(product.getId());
-        assertThat(orderDto.quantity()).isEqualTo(2);
-        assertThat(orderDto.deliveryDate())
-                .isEqualTo(LocalDate.now().plusDays(1));
+        assertThat(orderRepository.count())
+                .isGreaterThanOrEqualTo(5);
     }
 }

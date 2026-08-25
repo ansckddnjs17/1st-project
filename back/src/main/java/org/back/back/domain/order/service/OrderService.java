@@ -18,22 +18,23 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
 
-    public List<OrderDto> findOrders(int customerId,LocalDate date) {
+    public List<OrderDto> findOrders(String email,LocalDate date) {
 
-        if(!customerRepository.existsById(customerId)){
+        if (!customerRepository.existsByEmail(email)) {
             throw new NoSuchElementException(
                     "존재하지 않는 고객입니다."
             );
         }
+
         List<Order> orders;
 
         if (date == null) {
             orders = orderRepository
-                    .findAllByCustomerIdOrderByCreatedDateAsc(customerId);
+                    .findAllByCustomerEmailOrderByCreatedDateAsc(email);
         } else {
             orders = orderRepository
-                    .findAllByCustomerIdAndDeliveryDateOrderByCreatedDateAsc(
-                            customerId,
+                    .findAllByCustomerEmailAndDeliveryDateOrderByCreatedDateAsc(
+                            email,
                             date
                     );
         }
