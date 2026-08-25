@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.back.back.domain.order.dto.OrderDto;
 import org.back.back.domain.order.entity.Order;
 import org.back.back.domain.order.service.OrderService;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
