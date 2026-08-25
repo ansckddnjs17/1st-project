@@ -45,4 +45,8 @@ public class Order {
         this.quantity = quantity;
         this.deliveryDate = deliveryDate;
     }
+
+    public void modify(int quantity) {
+        this.quantity = quantity;
+    }
 }
