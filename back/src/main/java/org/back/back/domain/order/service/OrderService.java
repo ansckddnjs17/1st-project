@@ -9,7 +9,10 @@ import org.back.back.domain.order.dto.OrderCreateResponseDto;
 import org.back.back.domain.order.dto.OrderDto;
 import org.back.back.domain.order.entity.Order;
 import org.back.back.domain.order.repository.OrderRepository;
+import org.back.back.domain.product.entity.Product;
+import org.back.back.domain.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
