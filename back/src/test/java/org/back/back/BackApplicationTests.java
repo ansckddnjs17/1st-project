@@ -1,5 +1,7 @@
 package org.back.back;
 
+import org.back.back.domain.admin.dto.CustomerOrderDto;
+import org.back.back.domain.admin.service.AdminService;
 import org.back.back.domain.customer.entity.Customer;
 import org.back.back.domain.customer.repository.CustomerRepository;
 import org.back.back.domain.order.dto.OrderDto;
@@ -8,6 +10,7 @@ import org.back.back.domain.order.repository.OrderRepository;
 import org.back.back.domain.order.service.OrderService;
 import org.back.back.domain.product.entity.Product;
 import org.back.back.domain.product.repository.ProductRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,4 +35,9 @@ class BackApplicationTests {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private AdminService adminService;
+
+
 }

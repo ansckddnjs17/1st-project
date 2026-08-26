@@ -38,4 +38,20 @@ public class AdminController {
         return adminService.findOrder(id);
     }
 
+    @GetMapping(value = "/orders", params = "customerId")
+    public List<CustomerOrderDto> getOrdersByCustomer(
+            @RequestParam(name = "customerId") Integer customerId
+    ) {
+        return adminService.findOrdersByCustomerId(customerId);
+    }
+
+    @GetMapping(value = "/orders", params = {"date", "customerId"})
+    public List<CustomerOrderDto> getOrdersByCustomerAndDate(
+            @RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(name = "customerId") Integer customerId
+    ) {
+        return adminService.findOrdersByCustomerIdAndDate(customerId, date);
+    }
+
+
 }
