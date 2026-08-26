@@ -29,6 +29,8 @@ public class Order {
 
     private int quantity;
 
+    private int unitPrice;
+
     @CreatedDate
     private LocalDateTime createdDate;
 
@@ -48,5 +50,23 @@ public class Order {
 
     public void modify(int quantity) {
         this.quantity = quantity;
+    }
+
+    public Order(
+            Customer customer,
+            Product product,
+            int quantity,
+            int unitPrice,
+            LocalDate deliveryDate
+    ) {
+        this.customer = customer;
+        this.product = product;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.deliveryDate = deliveryDate;
+    }
+
+    public int getSubTotal() {
+        return quantity * unitPrice;
     }
 }
