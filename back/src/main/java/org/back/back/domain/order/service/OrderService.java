@@ -2,21 +2,33 @@ package org.back.back.domain.order.service;
 
 import lombok.RequiredArgsConstructor;
 import org.back.back.domain.customer.repository.CustomerRepository;
+import org.back.back.domain.customer.entity.Customer;
+import org.back.back.domain.customer.service.CustomerService;
+import org.back.back.domain.order.dto.OrderCreateRequestDto;
+import org.back.back.domain.order.dto.OrderCreateResponseDto;
 import org.back.back.domain.order.dto.OrderDto;
 import org.back.back.domain.order.entity.Order;
 import org.back.back.domain.order.repository.OrderRepository;
+import org.back.back.domain.product.entity.Product;
+import org.back.back.domain.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
+    private final ProductRepository productRepository;
+    private final CustomerService customerService;
+    private static final LocalTime CUTOFF_TIME = LocalTime.of(14, 0);
 
     public List<OrderDto> findOrders(String email,LocalDate date) {
 
@@ -68,5 +80,61 @@ public class OrderService {
         LocalDateTime now = LocalDateTime.now();
         LocalDate deliveryDate = order.getDeliveryDate();
         return !now.isBefore(deliveryDate.atTime(14,0));
+    }
+
+    @Transactional
+    public OrderCreateResponseDto createOrders(OrderCreateRequestDto request) {
+        Customer customer = customerService.findOrCreate(
+                request.email(), request.address(), request.postcode()
+        );
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate deliveryDate = calculateDeliveryDate(now);
+
+        List<Order> savedOrders = request
+                .items()
+                .stream()
+                .map(line ->
+                    createOrder(line, customer, deliveryDate)
+                )
+                .toList();
+
+        int totalAmount = savedOrders.stream().mapToInt(Order::getSubTotal).sum();
+
+        List<OrderDto> orderDtos = savedOrders.stream().map(OrderDto::new).toList();
+
+        return new OrderCreateResponseDto(orderDtos, totalAmount);
+    }
+
+    private Order createOrder(
+            OrderCreateRequestDto.OrderLineRequestDto line,
+            Customer customer,
+            LocalDate deliveryDate
+    ) {
+        Product product = productRepository
+                .findById(line.productId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다. " + line.productId()));
+
+        Optional<Order> existingOrder = orderRepository
+                .findByCustomerAndProductAndDeliveryDate(customer, product, deliveryDate);
+
+
+        if(existingOrder.isPresent()) {
+            Order order = existingOrder.get();
+            order.modify(order.getQuantity() + line.quantity());
+            return order;
+        }
+
+        Order order = new Order(customer, product, line.quantity(), product.getPrice(), deliveryDate);
+        return orderRepository.save(order);
+    }
+
+    private LocalDate calculateDeliveryDate(LocalDateTime now){
+        LocalDate today = now.toLocalDate();
+        LocalTime currentTime = now.toLocalTime();
+        if(currentTime.isBefore(CUTOFF_TIME)){
+            return today;
+        }
+        return today.plusDays(1);
     }
 }
