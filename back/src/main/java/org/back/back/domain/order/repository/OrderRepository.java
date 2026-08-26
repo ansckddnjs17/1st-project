@@ -31,4 +31,9 @@ public interface OrderRepository extends JpaRepository<Order,Integer> {
             Product product,
             LocalDate deliveryDate
     );
+    List<Order> findAllByCustomerIdOrderByCreatedDateAsc(Integer customerId);
+    List<Order> findAllByCustomerIdAndDeliveryDateOrderByCreatedDateAsc(
+            Integer customerId,
+            LocalDate deliveryDate
+    );
 }
