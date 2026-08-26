@@ -114,7 +114,7 @@ export default function OrdersPage() {
         <Link className={styles.brand} href="/">
           Grids &amp; Circle
         </Link>
-        <span>MY ORDERS</span>
+        <Link className={styles.myOrders} href="/">MY ORDERS</Link>
       </header>
 
       <section className={styles.card}>
