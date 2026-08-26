@@ -22,3 +22,33 @@ export async function getOrders(email: string, date?: string): Promise<Order[]> 
 
   return body.data ?? [];
 }
+
+async function readApiResponse<T>(response: Response): Promise<ApiResponse<T>> {
+  const body = (await response.json()) as ApiResponse<T>;
+  if (!response.ok) {
+    throw new Error(body.msg || "요청에 실패했습니다.");
+  }
+  return body;
+}
+
+export async function updateOrder(
+  id: number,
+  quantity: number,
+): Promise<Order> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/orders/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ quantity }),
+  });
+  const body = await readApiResponse<Order>(response);
+  return body.data;
+}
+
+export async function deleteOrder(id: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/orders/${id}`, {
+    method: "DELETE",
+  });
+  await readApiResponse<null>(response);
+}
