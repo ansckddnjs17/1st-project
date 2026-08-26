@@ -2,6 +2,7 @@ package org.back.back.domain.admin.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.back.back.domain.admin.dto.CustomerOrderDto;
+import org.back.back.domain.admin.dto.GroupOrderDto;
 import org.back.back.domain.admin.service.AdminService;
 import org.back.back.domain.order.dto.OrderDto;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,6 +18,11 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+
+    @GetMapping(value = "/groupOrders")
+    public List<GroupOrderDto> getGroupOrders(){
+        return adminService.findAllGroupeOrder();
+    }
 
     @GetMapping(value = "/orders")
     public List<CustomerOrderDto> getOrders(
