@@ -1,15 +1,11 @@
 package org.back.back.domain.order.service;
 
 import lombok.RequiredArgsConstructor;
-import org.back.back.domain.customer.entity.Customer;
 import org.back.back.domain.customer.repository.CustomerRepository;
 import org.back.back.domain.order.dto.OrderDto;
 import org.back.back.domain.order.entity.Order;
 import org.back.back.domain.order.repository.OrderRepository;
-import org.back.back.domain.product.entity.Product;
-import org.back.back.domain.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,7 +17,7 @@ import java.util.NoSuchElementException;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
-    private final ProductRepository productRepository;
+
     public List<OrderDto> findOrders(String email,LocalDate date) {
 
         if (!customerRepository.existsByEmail(email)) {
