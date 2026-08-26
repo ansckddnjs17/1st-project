@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
@@ -11,6 +12,14 @@ import styles from "./page.module.css";
 type Cart = Record<number, number>;
 
 const numberFormatter = new Intl.NumberFormat("ko-KR");
+
+const productImages: Record<string, string> = {
+  "Colombia Nariño": "/images/products/colombia-narino.png",
+  "Brazil Serra Do Caparaó":
+    "/images/products/brazil-serra-do-caparao.png",
+  "Ethiopia Sidamo": "/images/products/ethiopia-sidamo.png",
+  "Colombia Quindio": "/images/products/colombia-quindio.png",
+};
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -148,13 +157,17 @@ export default function HomePage() {
 
               return (
                 <li key={product.id} className={styles.productItem}>
-                  <div className={styles.productNumber}>
-                    {String(index + 1).padStart(2, "0")}
+                  <div className={styles.productImage}>
+                    <Image
+                    src={productImages[product.description]}
+                    alt={product.description}
+                    width={110}
+                    height={110}
+                    />
                   </div>
                   <div className={styles.productInfo}>
                     <span>ROASTED COFFEE</span>
-                    <h3>{product.name}</h3>
-                    <p>{product.description}</p>
+                    <h3>{product.description}</h3>
                   </div>
                   <strong className={styles.price}>
                     {numberFormatter.format(product.price)}원
@@ -199,11 +212,12 @@ export default function HomePage() {
               selectedProducts.map((product) => (
                 <div key={product.id} className={styles.summaryItem}>
                   <div>
-                    <strong>{product.name}</strong>
+                    <strong>{product.description}</strong>
                     <span>{product.quantity}개</span>
                   </div>
                   <span>
-                    {numberFormatter.format(product.price * product.quantity)}원
+                    {numberFormatter.format(product.price * product.quantity,
+                    )}원
                   </span>
                 </div>
               ))
