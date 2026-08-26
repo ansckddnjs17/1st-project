@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { getOrders } from "@/lib/orderApi";
+import { getOrders, deleteOrder, updateOrder } from "@/lib/orderApi";
 import type { Order } from "@/types/order";
 import styles from "./orders.module.css";
 
@@ -14,6 +14,15 @@ export default function OrdersPage() {
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [busyId, setBusyId] = useState<number | null>(null);
+
+  //배송중인지 확인하는 함수
+  //배송일 이전일 시 true -> +/-, 삭제 활성화
+  function isOrderEditable(order: Order){
+    const [year, month, day] = order.deliveryDate.split("-").map(Number);
+    const shippingStartsAt = new Date(year,month -1, day, 14, 0, 0);
+    return new Date() < shippingStartsAt;
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,6 +50,60 @@ export default function OrdersPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  //수량 변경 함수
+  //수량 1 미만은 금지
+  // updateOrder로 PUT 하여 업데이트
+  // 성공하면 해당 id의 order만 updated로 교체
+  async function handleQuantityChange(order: Order, nextQuantity: number) {
+  if (nextQuantity < 1 || busyId !== null) {
+    return;
+  }
+  try {
+    setBusyId(order.id);
+    setError("");
+    const updated = await updateOrder(order.id, nextQuantity);
+    setOrders((current) =>
+      current.map((item) => (item.id === order.id ? updated : item)),
+    );
+  } catch (caughtError) {
+    setError(
+      caughtError instanceof Error
+        ? caughtError.message
+        : "수량 변경 중 오류가 발생했습니다.",
+    );
+  } finally {
+    setBusyId(null);
+  }
+}
+
+  //삭제 함수
+  async function  handleDelete(order: Order) {
+    if (busyId !==null){
+      return;
+    }
+
+    const confirmed = window.confirm("이 주문을 삭제하시겠습니까?");
+    if(!confirmed) {
+      return;
+    }
+
+    try {
+      setBusyId(order.id);
+      setError("");
+      await deleteOrder(order.id);
+      setOrders((current) => current.filter((item) => item.id !== order.id));
+    } catch (caughtError) {
+      setError(
+        caughtError instanceof Error
+          ? caughtError.message
+          : "주문 삭제 중 오류가 발생했습니다.",
+      );
+    } finally {
+      setBusyId(null);
+    }
+    
   }
 
   const totalQuantity = orders.reduce((sum, order) => sum + order.quantity, 0);
@@ -132,8 +195,37 @@ export default function OrdersPage() {
                       <strong>상품 #{order.productId}</strong>
                     </div>
                     <div>
+                      {/*수량 변경, 삭제 버튼 추가*/}
                       <span>수량</span>
-                      <strong>{order.quantity}개</strong>
+                      {isOrderEditable(order) ? (
+                        <div className={styles.quantityControls}>
+                          <button
+                            type="button"
+                            disabled={busyId !== null || order.quantity <= 1}
+                            onClick={() => handleQuantityChange(order, order.quantity -1)}
+                          >
+                            -
+                          </button>
+                          <strong>{order.quantity}</strong>
+                          <button
+                            type="button"
+                            disabled={busyId !== null}
+                            onClick={() => handleQuantityChange(order, order.quantity +1)}
+                          >
+                            +
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.deleteButton}
+                            disabled={busyId !== null}
+                            onClick={() => handleDelete(order)}
+                          >
+                            삭제
+                          </button>
+                          </div>
+                      ) : (
+                        <strong>{order.quantity}개</strong>
+                      )}
                     </div>
                     <div>
                       <span>배송일</span>
