@@ -22,4 +22,10 @@ public interface OrderRepository extends JpaRepository<Order,Integer> {
             String email,
             LocalDate deliveryDate
     );
+// 주문 목록 조회에 필요한 코드
+    List<Order> findAllByCustomerIdOrderByCreatedDateAsc(Integer customerId);
+    List<Order> findAllByCustomerIdAndDeliveryDateOrderByCreatedDateAsc(
+            Integer customerId, LocalDate deliveryDate
+    );
+
 }

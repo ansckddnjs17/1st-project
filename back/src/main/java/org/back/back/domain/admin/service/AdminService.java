@@ -34,4 +34,18 @@ public class AdminService {
         return new OrderDto(order);
     }
 
+    public List<CustomerOrderDto> findOrdersByCustomerId(Integer customerId) {
+        return orderRepository.findAllByCustomerIdOrderByCreatedDateAsc(customerId)
+                .stream()
+                .map(CustomerOrderDto::new)
+                .toList();
+    }
+    public List<CustomerOrderDto> findOrdersByCustomerIdAndDate(Integer customerId, LocalDate date) {
+        return orderRepository.findAllByCustomerIdAndDeliveryDateOrderByCreatedDateAsc(customerId, date)
+                .stream()
+                .map(CustomerOrderDto::new)
+                .toList();
+    }
+
+
 }
