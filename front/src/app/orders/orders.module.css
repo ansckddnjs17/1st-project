@@ -321,3 +321,19 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+.myOrders {
+  padding: 11px 17px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  color: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: normal;
+  text-decoration: none;
+}
+
+.myOrders:hover {
+  color: var(--paper);
+  background: var(--ink);
+}
