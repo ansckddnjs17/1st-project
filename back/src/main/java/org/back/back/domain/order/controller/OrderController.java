@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.back.back.domain.order.dto.OrderCreateRequestDto;
-import org.back.back.domain.order.dto.OrderCreateResponseDto;
 import org.back.back.domain.order.dto.OrderDto;
 import org.back.back.domain.order.entity.Order;
 import org.back.back.domain.order.service.OrderService;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -71,10 +69,10 @@ public class OrderController {
     ){}
 
     @PostMapping("/orders")
-    public RsData<OrderCreateResponseDto> createOrder(
+    public RsData<List<OrderDto>> createOrder(
             @Valid @RequestBody OrderCreateRequestDto request
     ){
-        OrderCreateResponseDto createdOrder = orderService.createOrders(request);
+        List<OrderDto> createdOrder = orderService.createOrders(request);
         return new RsData<>("201", "주문이 생성되었습니다.", createdOrder);
     }
 }

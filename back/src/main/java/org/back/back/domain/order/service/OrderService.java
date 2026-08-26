@@ -5,7 +5,6 @@ import org.back.back.domain.customer.repository.CustomerRepository;
 import org.back.back.domain.customer.entity.Customer;
 import org.back.back.domain.customer.service.CustomerService;
 import org.back.back.domain.order.dto.OrderCreateRequestDto;
-import org.back.back.domain.order.dto.OrderCreateResponseDto;
 import org.back.back.domain.order.dto.OrderDto;
 import org.back.back.domain.order.entity.Order;
 import org.back.back.domain.order.repository.OrderRepository;
@@ -83,7 +82,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderCreateResponseDto createOrders(OrderCreateRequestDto request) {
+    public List<OrderDto> createOrders(OrderCreateRequestDto request) {
         Customer customer = customerService.findOrCreate(
                 request.email(), request.address(), request.postcode()
         );
@@ -91,22 +90,16 @@ public class OrderService {
         LocalDateTime now = LocalDateTime.now();
         LocalDate deliveryDate = calculateDeliveryDate(now);
 
-        List<Order> savedOrders = request
+        return request
                 .items()
                 .stream()
                 .map(line ->
-                    createOrder(line, customer, deliveryDate)
+                        createOrder(line, customer, deliveryDate)
                 )
                 .toList();
-
-        int totalAmount = savedOrders.stream().mapToInt(Order::getSubTotal).sum();
-
-        List<OrderDto> orderDtos = savedOrders.stream().map(OrderDto::new).toList();
-
-        return new OrderCreateResponseDto(orderDtos, totalAmount);
     }
 
-    private Order createOrder(
+    private OrderDto createOrder(
             OrderCreateRequestDto.OrderLineRequestDto line,
             Customer customer,
             LocalDate deliveryDate
@@ -122,11 +115,13 @@ public class OrderService {
         if(existingOrder.isPresent()) {
             Order order = existingOrder.get();
             order.modify(order.getQuantity() + line.quantity());
-            return order;
+            return new OrderDto(order);
         }
 
-        Order order = new Order(customer, product, line.quantity(), product.getPrice(), deliveryDate);
-        return orderRepository.save(order);
+        Order order = new Order(customer, product, line.quantity(), deliveryDate);
+        Order savedOrder = orderRepository.save(order);
+
+        return new OrderDto(savedOrder);
     }
 
     private LocalDate calculateDeliveryDate(LocalDateTime now){
