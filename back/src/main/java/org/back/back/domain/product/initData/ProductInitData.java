@@ -16,9 +16,9 @@ public class ProductInitData implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         if (productRepository.count() > 0) return;
 
-        productRepository.save(new Product("커피콩", "Colombia Nariño", 5000));
-        productRepository.save(new Product("커피콩", "Brazil Serra Do Caparaó", 5000));
-        productRepository.save(new Product("커피콩", "Ethiopia Sidamo", 5500));
-        productRepository.save(new Product("커피콩", "Colombia Quindio", 6000));
+        productRepository.save(new Product("Colombia Nariño", "Colombia Nariño", 5000));
+        productRepository.save(new Product("Brazil Serra Do Caparaó", "Brazil Serra Do Caparaó", 5000));
+        productRepository.save(new Product("Ethiopia Sidamo", "Ethiopia Sidamo", 5500));
+        productRepository.save(new Product("Colombia Quindio", "Colombia Quindio", 6000));
     }
 }
