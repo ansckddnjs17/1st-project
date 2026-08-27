@@ -4,6 +4,7 @@ export type Order = {
   productId: number;
   quantity: number;
   deliveryDate: string;
+  price: number;
 };
 
 export type ApiResponse<T> = {
