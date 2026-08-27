@@ -9,7 +9,8 @@ public record OrderDto(
         int customerId,
         int productId,
         int quantity,
-        LocalDate deliveryDate
+        LocalDate deliveryDate,
+        int price
 ) {
     public OrderDto(Order order){
         this(
@@ -17,7 +18,8 @@ public record OrderDto(
                 order.getCustomer().getId(),
                 order.getProduct().getId(),
                 order.getQuantity(),
-                order.getDeliveryDate()
+                order.getDeliveryDate(),
+                order.getProduct().getPrice()
         );
     }
 }
