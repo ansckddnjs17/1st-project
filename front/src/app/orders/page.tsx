@@ -195,6 +195,11 @@ export default function OrdersPage() {
                       <strong>상품 #{order.productId}</strong>
                     </div>
                     <div>
+                      <span>금액</span>
+                      <strong>{(order.price*order.quantity).toLocaleString("ko-KR")}원
+                      </strong>
+                    </div>
+                    <div>
                       {/*수량 변경, 삭제 버튼 추가*/}
                       <span>수량</span>
                       {isOrderEditable(order) ? (
