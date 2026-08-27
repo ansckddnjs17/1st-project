@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
 import { getOrders, deleteOrder, updateOrder } from "@/lib/orderApi";
 import type { Order } from "@/types/order";
 import styles from "./orders.module.css";
+import { getProducts } from "@/lib/productApi"
+import { Product }from "@/types/product"
 
 export default function OrdersPage() {
   const [email, setEmail] = useState("");
@@ -15,6 +17,11 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [busyId, setBusyId] = useState<number | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    getProducts().then(setProducts).catch(() => {});
+  }, []);
 
   //배송중인지 확인하는 함수
   //배송일 이전일 시 true -> +/-, 삭제 활성화
@@ -192,7 +199,7 @@ export default function OrdersPage() {
                   <div className={styles.orderInfo}>
                     <div>
                       <span>상품</span>
-                      <strong>상품 #{order.productId}</strong>
+                      <strong>{products.find((product) => product.id === order.productId)?.name}</strong>
                     </div>
                     <div>
                       <span>금액</span>
