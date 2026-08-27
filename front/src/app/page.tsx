@@ -248,8 +248,12 @@ export default function HomePage() {
             <input
               id="postcode"
               value={postcode}
-              onChange={(event) => setPostcode(event.target.value)}
+              onChange={(event) =>
+                setPostcode(event.target.value.replace(/\D/g, "").slice(0, 5))
+              }
               placeholder="05000"
+              inputMode="numeric"
+              maxLength={5}
               autoComplete="postal-code"
             />
 
