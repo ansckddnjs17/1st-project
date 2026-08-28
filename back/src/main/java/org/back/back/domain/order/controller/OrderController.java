@@ -9,7 +9,6 @@ import org.back.back.domain.order.entity.Order;
 import org.back.back.domain.order.service.OrderService;
 import org.back.back.global.dto.RsData;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -41,7 +40,6 @@ public class OrderController {
 
 
     @PutMapping("/orders/{id}")
-    @Transactional
     public RsData<OrderDto> modify(
             @PathVariable int id,
             @Valid @RequestBody OrderModifyReqBody reqBody
@@ -51,7 +49,6 @@ public class OrderController {
     }
 
     @DeleteMapping("/orders/{id}")
-    @Transactional
     public RsData<Void> delete(
             @PathVariable int id
     ){
