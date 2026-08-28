@@ -3,6 +3,7 @@ package org.back.back.domain.order.event;
 import java.time.LocalDate;
 
 public record OrderCreatedEvent(
+        String message,
         int orderId,
         String customerEmail,
         String productName,
@@ -11,12 +12,12 @@ public record OrderCreatedEvent(
 ) {
     public String toAlertMessage(){
         return """
-                새 주문이 들어왔습니다.
+                %s
                 주문번호: %d
                 고객 이메일: %s
                 상품: %s
-                수량: %d
+                총 수량: %d
                 배송일: %s
-                """.formatted(orderId,customerEmail,productName,quantity,deliveryDate);
+                """.formatted(message,orderId,customerEmail,productName,quantity,deliveryDate);
     }
 }

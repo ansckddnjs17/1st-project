@@ -122,6 +122,7 @@ public class OrderService {
             Order order = existingOrder.get();
             order.modify(order.getQuantity() + line.quantity());
             eventPublisher.publishEvent(new OrderCreatedEvent(
+                    "추가 주문이 변경되었습니다.",
                     order.getId(),
                     order.getCustomer().getEmail(),
                     order.getProduct().getName(),
@@ -135,6 +136,7 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
 
         eventPublisher.publishEvent(new OrderCreatedEvent(
+                "새 주문이 들어왔습니다.",
                 order.getId(),
                 order.getCustomer().getEmail(),
                 order.getProduct().getName(),

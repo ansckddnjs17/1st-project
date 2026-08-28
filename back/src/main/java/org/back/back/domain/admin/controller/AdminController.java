@@ -5,11 +5,13 @@ import org.back.back.domain.admin.dto.CustomerOrderDto;
 import org.back.back.domain.admin.dto.GroupOrderDto;
 import org.back.back.domain.admin.service.AdminService;
 import org.back.back.domain.order.dto.OrderDto;
+import org.back.back.global.sse.AdminSseEmitters;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,6 +20,7 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+    private final AdminSseEmitters adminSseEmitters;
 
     @GetMapping(value = "/groupOrders")
     public List<GroupOrderDto> getGroupOrders(){
@@ -56,5 +59,12 @@ public class AdminController {
             @RequestParam(name = "customerId") Integer customerId
     ) {
         return adminService.findOrdersByCustomerIdAndDate(customerId, date);
+    }
+
+    @GetMapping(value = "/order-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter stream(){
+        SseEmitter emitter = new SseEmitter(0L);
+        adminSseEmitters.add(emitter);
+        return emitter;
     }
 }
