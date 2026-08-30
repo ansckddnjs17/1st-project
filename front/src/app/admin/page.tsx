@@ -50,6 +50,21 @@ export default function AdminPage() {
   }, [selectedCustomer, deliveryDate]);
 
   /**
+ * 관리자 페이지에서 SSE를 구독, 서버가 주문 알림을 보내면 팝업 띄움
+ */
+  useEffect(() => {
+  const base =
+    process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+  const es = new EventSource(`${base}/api/v1/admin/order-stream`);
+  es.onmessage = (e) => {
+    window.alert(e.data);
+  };
+  return () => {
+    es.close();
+  };
+}, []);
+
+  /**
    * 이메일 클릭 시 해당 고객 필터링
    */
   const handleCustomerClick = (email: string) => {

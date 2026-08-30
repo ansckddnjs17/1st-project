@@ -1,15 +1,17 @@
 package org.back.back.domain.order.service;
 
 import lombok.RequiredArgsConstructor;
-import org.back.back.domain.customer.repository.CustomerRepository;
 import org.back.back.domain.customer.entity.Customer;
+import org.back.back.domain.customer.repository.CustomerRepository;
 import org.back.back.domain.customer.service.CustomerService;
 import org.back.back.domain.order.dto.OrderCreateRequestDto;
 import org.back.back.domain.order.dto.OrderDto;
 import org.back.back.domain.order.entity.Order;
+import org.back.back.domain.order.event.OrderCreatedEvent;
 import org.back.back.domain.order.repository.OrderRepository;
 import org.back.back.domain.product.entity.Product;
 import org.back.back.domain.product.repository.ProductRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,8 @@ public class OrderService {
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
     private final CustomerService customerService;
+    //카프카 이벤트 발행용
+    private final ApplicationEventPublisher eventPublisher;
     private static final LocalTime CUTOFF_TIME = LocalTime.of(14, 0);
 
     public List<OrderDto> findOrders(String email,LocalDate date) {
@@ -55,6 +59,7 @@ public class OrderService {
                 .toList();
     }
 
+    @Transactional
     public Order modify(int id, int quantity){
         Order order = orderRepository.findById(id).orElseThrow();
         if(isShipping(order)){
@@ -64,6 +69,7 @@ public class OrderService {
         return order;
     }
 
+    @Transactional
     public void delete(int id){
         Order order = orderRepository.findById(id).orElseThrow();
         if(isShipping(order)){
@@ -111,16 +117,32 @@ public class OrderService {
         Optional<Order> existingOrder = orderRepository
                 .findByCustomerAndProductAndDeliveryDate(customer, product, deliveryDate);
 
-
+//주문 Dto를 주기전 OrderCreatedEvent 발행
         if(existingOrder.isPresent()) {
             Order order = existingOrder.get();
             order.modify(order.getQuantity() + line.quantity());
+            eventPublisher.publishEvent(new OrderCreatedEvent(
+                    "추가 주문이 변경되었습니다.",
+                    order.getId(),
+                    order.getCustomer().getEmail(),
+                    order.getProduct().getName(),
+                    order.getQuantity(),
+                    order.getDeliveryDate()
+            ));
             return new OrderDto(order);
         }
 
         Order order = new Order(customer, product, line.quantity(), deliveryDate);
         Order savedOrder = orderRepository.save(order);
 
+        eventPublisher.publishEvent(new OrderCreatedEvent(
+                "새 주문이 들어왔습니다.",
+                order.getId(),
+                order.getCustomer().getEmail(),
+                order.getProduct().getName(),
+                order.getQuantity(),
+                order.getDeliveryDate()
+        ));
         return new OrderDto(savedOrder);
     }
 

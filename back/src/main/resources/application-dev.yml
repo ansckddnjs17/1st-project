@@ -4,3 +4,10 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: back-local
+      auto-offset-reset: earliest
+  discord:
+    webhook-url: https://discord.com/api/webhooks/1542764842434433074/y-5F3e21yzP04d2nzxcgXgfcHVqEUcUIVssuaSd_5J1KUfnTfQXUu3SQ4sg8_DSecO_K
